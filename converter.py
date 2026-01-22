@@ -13,17 +13,19 @@ def main():
     print("Scientific:", format_scientific(converted.magnitude))
 
 
-# Main conversion logic
+# Main convert logic
 def convert(value, from_unit, to_unit, mode="numeric"):
-    converted = float(value) * ureg.__call__(from_unit).to(ureg.__call__(to_unit))
+    converted = (float(value) * ureg.__call__(from_unit)).to(ureg.__call__(to_unit))
+    magnitude = converted.magnitude
+    unit = converted.units
 
     match mode:
         case "numeric":
             return converted
         case "exponential":
-            return format_exponential(converted.magnitude)
+            return f"{format_exponential(magnitude)} {unit}"
         case "scientific":
-            return format_scientific(converted.magnitude)
+            return f"{format_scientific(magnitude)} {unit}"
 
 
 # Exponential Notation
