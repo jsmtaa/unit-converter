@@ -14,8 +14,16 @@ def main():
 
 
 # Main conversion logic
-def convert(value, from_unit, to_unit):
-    return float(value) * ureg.__call__(from_unit).to(ureg.__call__(to_unit))
+def convert(value, from_unit, to_unit, mode="numeric"):
+    converted = float(value) * ureg.__call__(from_unit).to(ureg.__call__(to_unit))
+
+    match mode:
+        case "numeric":
+            return converted
+        case "exponential":
+            return format_exponential(converted.magnitude)
+        case "scientific":
+            return format_scientific(converted.magnitude)
 
 
 # Exponential Notation
