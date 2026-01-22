@@ -2,17 +2,6 @@ from pint import UnitRegistry
 
 ureg = UnitRegistry()
 
-def main():
-    # Values are taken from here
-    value, from_unit, to_unit = 1, "m", "km"
-    
-    converted = convert(value, from_unit, to_unit)
-
-    print("Converted:", converted)
-    print("Exponential:", format_exponential(converted.magnitude))
-    print("Scientific:", format_scientific(converted.magnitude))
-
-
 # Main convert logic
 def convert(value, from_unit, to_unit, mode="numeric"):
     converted = (float(value) * ureg.__call__(from_unit)).to(ureg.__call__(to_unit))
@@ -56,7 +45,3 @@ def format_scientific(value):
     exponent = str(exponent).translate(sup)
 
     return f"{base} x 10{exponent}"
-
-
-if __name__ == "__main__":
-    main()
