@@ -3,40 +3,42 @@ from pint import UnitRegistry
 ureg = UnitRegistry()
 
 def main():
-    value = 1
-    from_unit = "m"
-    to_unit = "km"
+    # Values are taken from here
+    value, from_unit, to_unit = 1, "m", "km"
+    
     converted = convert(value, from_unit, to_unit)
 
-    print("Converted:", converted, to_unit)
-    print("Exponential:", format_exponential(converted))
-    print("Scientific:", format_scientific(converted))
+    print("Converted:", converted)
+    print("Exponential:", format_exponential(converted.magnitude))
+    print("Scientific:", format_scientific(converted.magnitude))
 
 
-# Simple conversion
+# Main conversion logic
 def convert(value, from_unit, to_unit):
-    return float(value) * ureg.__call__(from_unit).to(ureg.__call__(to_unit)).magnitude
+    return float(value) * ureg.__call__(from_unit).to(ureg.__call__(to_unit))
 
-"""
-Default formatting:
-    format_scientific if len < 0 or len > 3 because 123.0 is unecessary for 1.23 x 10^1
-    format_exponential if not satisfied
-"""
 
-# Scientific
+# Exponential Notation
+def format_exponential(value):
+    return f"{value:.2e}"
+
+
+# Scientific Notation
 def format_scientific(value):
+    # The decimal places or the exponent value can be derived from its base numeric value
+    # For simplicity, I just used format_exponential() and split 'e' which takes the exponent from value[1]
     value = format_exponential(value).split('e')
     base, exponent = value[0], value[1]
     sign = exponent[0]
 
-    # Check if exponent (after sign) is 00
+    # Check exponent after sign (happens because format_exponential() returns 00 when there aren't any exponents)
     if exponent[1:] == "00":
         exponent = exponent[1:].removeprefix("00")
-    # Check if exponent (after sign) has leading zero
+    # Check if exponent (after sign) has leading zero (e.g. 01, 02, 03)
     elif exponent[1] == "0":
         exponent = exponent[0] + exponent[2:]
 
-    # Remove positive sign if positive
+    # Remove positive sign if positive (usual format conventions)
     if sign == "+":
         exponent = exponent.removeprefix('+')
 
@@ -45,9 +47,6 @@ def format_scientific(value):
 
     return f"{base} x 10{exponent}"
 
-# Exponential
-def format_exponential(value):
-    return f"{value:.2e}"
 
 if __name__ == "__main__":
     main()
